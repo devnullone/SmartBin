@@ -12,6 +12,8 @@
  * MIT License
  *
  *******************************************************************************/
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <time.h>
@@ -67,7 +69,9 @@ float valeur;
 // TR
 float tauxDeRemplissage;
 
-
+// Time from NTP Sever - for TIMESTAMP Playload Value
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
 void setup_wifi() {
   delay(10);
@@ -92,7 +96,11 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-
+String setTimeStamp(){
+    timeClient.update();
+    String timestamp = timeClient.getFormattedTime();
+    return timestamp;
+  }
 void setDateTime() {
   // You can use your own timezone, but the exact time is not used at all.
   // Only the date is needed for validating the certificates.
@@ -218,21 +226,22 @@ String playload(){
     else{
     device_current_status = device_status_tab[4]; // erreur
     }
-    // FORMATAGE DU MSG AVANT ENVOIE <======================= JE SUIS ICI
-
-    // Add values in the payload
+    
+    // Formatage en Json
+    // Add values to the payload
+    
     payload["TauxDeRemp"] = taux_remp;
     payload["Status"] = device_current_status;
     payload["Latitude"] = lat;
     payload["Longitude"] = lon;
     payload["Battery"] = "N/A";
-    payload["TIMESTAMP"] = "193923823747821";
+    payload["TIMESTAMP"] = setTimeStamp();
 
     serializeJson(payload, msg);
 
   return msg;
   }
-
+  
 void setup() {
   delay(500);
   // When opening the Serial Monitor, select 9600 Baud
@@ -245,6 +254,7 @@ void setup() {
   LittleFS.begin();
   setup_wifi();
   setDateTime();
+  timeClient.begin();
 
   pinMode(LED_BUILTIN, OUTPUT); // Initialize the LED_BUILTIN pin as an output
 
@@ -278,7 +288,8 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+    String pload = playload();
+    snprintf (msg, MSG_BUFFER_SIZE, "%s", pload.c_str());
     Serial.print("Publish message: ");
     Serial.println(msg);
     client->publish("testTopic", msg);
