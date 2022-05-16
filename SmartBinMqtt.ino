@@ -28,8 +28,18 @@
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
 const char* mqtt_server = HIVEMQ_SERVER;
+const short mqtt_port = HIVEMQ_PORT;
 const char* mqtt_user = HIVEMQ_USER;
 const char* mqtt_password = HIVEMQ_PASSWORD;
+const char* client_id = CLIENT_ID;
+const char* device_uid = DEVICE_UID;
+const char *device_status_tab[5] = DEVICE_STATUS_TAB;
+const char* device_current_status = DEVICE_CURRENT_STATUS;
+const short hauteurPou = DEVICE_HAUTEUR; // en Cm 
+const char* lat = LATITUDE_VALUE;
+const char* lon = LONGITUDE_VALUE;
+
+
 // A single, global CertStore which can be used by all connections.
 // Needs to stay live the entire time any of the WiFiClientBearSSLs
 // are present.
@@ -41,6 +51,22 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE (500)
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
+
+// HC-SE04 <------> EPS8266
+const int trigPin = 15;
+const int echoPin = 13;
+
+//Definissons la vitesse du Son en cm/uS
+#define vitesseDuSon 0.034
+
+long durer;
+float distanceCm;
+float valeur;
+
+// TR
+float tauxDeRemplissage;
+
+
 
 void setup_wifi() {
   delay(10);
@@ -146,11 +172,62 @@ void deconnection(){
       Serial.print("deconnexion success, Bye!");
   }
  }
- 
+
+float tr(){
+  // trigPin fermer
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // trigPin ouvert pendant 10 microsecondes
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Lire le echoPin et retourne la durer de l'onde en microsecondes
+  durer = pulseIn(echoPin, HIGH);
+  
+  // Calcul la distance
+  distanceCm = durer * vitesseDuSon/2;
+
+  valeur = distanceCm / hauteurPou;
+  tauxDeRemplissage = (1 - valeur)*100; // Calcul du Taux de Remplissage (TR) of trash
+  return tauxDeRemplissage;
+  } 
+  
+String playload(){
+  String msg = "";
+  float taux_remp;
+  taux_remp = tr();
+  if(taux_remp <= 15){
+    device_current_status = device_status_tab[0]; // vide
+    }
+    
+    else if(taux_remp > 30 && taux_remp <= 75){
+    device_current_status = device_status_tab[1]; // semi-plein
+    }
+    
+    else if(taux_remp > 75 && taux_remp <= 98){
+    device_current_status = device_status_tab[2]; // plein
+    }
+    
+    else if(taux_remp > 98 && taux_remp <= 100){
+    device_current_status = device_status_tab[3]; // debordement
+    }
+    
+    else{
+    device_current_status = device_status_tab[4]; // erreur
+    }
+
+
+  return msg;
+  }
+
 void setup() {
   delay(500);
   // When opening the Serial Monitor, select 9600 Baud
   Serial.begin(9600);
+  pinMode(trigPin, OUTPUT); // Mets le trigPin comme Sortie (Output)
+  pinMode(echoPin, INPUT); // Mets le echoPin comme Entrer (Input)
+  
   delay(500);
 
   LittleFS.begin();
@@ -175,7 +252,7 @@ void setup() {
 
   client = new PubSubClient(*bear);
 
-  client->setServer(mqtt_server, 8883);
+  client->setServer(mqtt_server, mqtt_port);
   client->setCallback(callback);
 }
 
