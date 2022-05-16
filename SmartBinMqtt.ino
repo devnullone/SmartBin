@@ -20,11 +20,16 @@
 #include <LittleFS.h>
 #include <CertStoreBearSSL.h>
 
-// Update these with values suitable for your network.
-const char* ssid = "Ameno's iDevice";
-const char* password = "ZK10@2022";
-const char* mqtt_server = "63a31ac110854457a8740f959e1f510a.s1.eu.hivemq.cloud";
+// Additional  headers 
+#include "config.h"
 
+
+// Translate config.h defines into variables used by the 
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASS;
+const char* mqtt_server = HIVEMQ_SERVER;
+const char* mqtt_user = HIVEMQ_USER;
+const char* mqtt_password = HIVEMQ_PASSWORD;
 // A single, global CertStore which can be used by all connections.
 // Needs to stay live the entire time any of the WiFiClientBearSSLs
 // are present.
@@ -108,10 +113,10 @@ void reconnect() {
   // Loop until we’re reconnected
   while (!client->connected()) {
     Serial.print("Attempting MQTT connection…");
-    String clientId = "ESP8266Client - MyClient";
+    String deviceId = "ESP8266Client - MyClient";
     // Attempt to connect
     // Insert your password
-    if (client->connect(clientId.c_str(), "trsdevice", "c4y8.jY.vt5AJnh")) {
+    if (client->connect(deviceId.c_str(), mqtt_user, mqtt_password)) {
       Serial.println("connected");
       // Once connected, publish an announcement…
       client->publish("testTopic", "hello world");
