@@ -4,4 +4,4 @@
 
 # Configuration 
 
-config.h
+*.h
