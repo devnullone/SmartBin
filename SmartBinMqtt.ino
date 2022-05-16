@@ -69,7 +69,7 @@ float valeur;
 // TR
 float tauxDeRemplissage;
 
-// Time from NTP Sever - for TIMESTAMP Playload Value
+// Time from NTP Sever - for TIMESTAMP Payload Value
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
@@ -202,7 +202,7 @@ float tr(){
   return tauxDeRemplissage;
   } 
   
-String playload(){
+String payloadfunc(){
   StaticJsonDocument<200> payload;
   String msg;
   float taux_remp;
@@ -288,7 +288,7 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    String pload = playload();
+    String pload = payloadfunc();
     snprintf (msg, MSG_BUFFER_SIZE, "%s", pload.c_str());
     Serial.print("Publish message: ");
     Serial.println(msg);
