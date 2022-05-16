@@ -1,5 +1,4 @@
-// Copyright (c) SAVEUP Technologies. All rights reserved.
-// SPDX-License-Identifier: MIT
+// MIT License
 
 // SIM800L <------> EPS8266
 #define SIM800_RX_PIN 14

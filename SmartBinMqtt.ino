@@ -7,11 +7,10 @@
   les rondes pour la collecte et le traitement des ordures.                     *
  *                                                                              *
  * Author: KODZO A. Mawuena M.                                                  *
- * Last version available on https://github.com/mawuen/SmartBin.git             *
+ * Last version available on https://github.com/devnullone/SmartBin.git         *
  ********************************************************************************
  * MIT License
  *
- * Copyright (c) 2022 KODZO A. Mawuena M.  
  *******************************************************************************/
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
@@ -128,14 +127,21 @@ void reconnect() {
   }
 }
 
+
 void deepSleep(){
   // Deep sleep mode for X min, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
-  Serial.println("Passe en mode sommeil profond pendant 1 min");
+  Serial.println("Passe en mode sommeil profond pendant 5 min");
   ESP.deepSleep(30e7); 
   
   }
 
-
+void deconnection(){
+  while(client->connected()){
+      client->disconnect();
+      Serial.print("deconnexion success, Bye!");
+  }
+ }
+ 
 void setup() {
   delay(500);
   // When opening the Serial Monitor, select 9600 Baud
@@ -183,6 +189,6 @@ void loop() {
     Serial.println(msg);
     client->publish("testTopic", msg);
   }
-  
+  deconnection(); // Deconnexion
   deepSleep(); // Passage en mode veille prolonger pour sauveguarder la batterie
 }
