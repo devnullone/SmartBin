@@ -38,7 +38,7 @@ const char* client_id = CLIENT_ID;
 const char* device_uid = DEVICE_UID;
 const char *device_status_tab[5] = DEVICE_STATUS_TAB;
 const char* device_current_status = DEVICE_CURRENT_STATUS;
-const short hauteurPou = DEVICE_HAUTEUR; // en Cm 
+const float hauteurPou = DEVICE_HAUTEUR; // en Cm 
 const char* lat = LATITUDE_VALUE;
 const char* lon = LONGITUDE_VALUE;
 
@@ -63,7 +63,8 @@ const int echoPin = 13;
 #define vitesseDuSon 0.034
 
 long durer;
-float distanceCm;
+float videCm;
+float dechetCm;
 float valeur;
 
 // TR
@@ -71,7 +72,7 @@ float tauxDeRemplissage;
 
 // Time from NTP Sever - for TIMESTAMP Payload Value
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 60000);
 
 void setup_wifi() {
   delay(10);
@@ -96,9 +97,9 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-String setTimeStamp(){
+long setTimeStamp(){
     timeClient.update();
-    String timestamp = timeClient.getFormattedTime();
+    long timestamp = timeClient.getEpochTime();
     return timestamp;
   }
 void setDateTime() {
@@ -154,9 +155,9 @@ void reconnect() {
     if (client->connect(deviceId.c_str(), mqtt_user, mqtt_password)) {
       Serial.println("connected");
       // Once connected, publish an announcement…
-      client->publish("testTopic", "hello world");
+      //client->publish("testTopic", "hello world");
       // … and resubscribe
-      client->subscribe("testTopic");
+      //client->subscribe("testTopic");
     } else {
       Serial.print("failed, rc = ");
       Serial.print(client->state());
@@ -178,7 +179,7 @@ void deepSleep(){
 void deconnection(){
   while(client->connected()){
       client->disconnect();
-      Serial.print("deconnexion success, Bye!");
+      Serial.println("deconnexion success, Bye!");
   }
  }
 
@@ -194,11 +195,10 @@ float tr(){
   // Lire le echoPin et retourne la durer de l'onde en microsecondes
   durer = pulseIn(echoPin, HIGH);
   
-  // Calcul la distance
-  distanceCm = durer * vitesseDuSon/2;
-
-  valeur = distanceCm / hauteurPou;
-  tauxDeRemplissage = (1 - valeur)*100; // Calcul du Taux de Remplissage (TR) of trash
+  // Calcul la distance du vide
+  videCm = durer * vitesseDuSon/2;
+  dechetCm = hauteurPou - videCm;
+  tauxDeRemplissage = (dechetCm * 100) / hauteurPou;
   return tauxDeRemplissage;
   } 
   
@@ -207,11 +207,11 @@ String payloadfunc(){
   String msg;
   float taux_remp;
   taux_remp = tr();
-  if(taux_remp <= 15){
+  if(taux_remp > 0 && taux_remp <= 37){
     device_current_status = device_status_tab[0]; // vide
     }
     
-    else if(taux_remp > 30 && taux_remp <= 75){
+    else if(taux_remp > 37 && taux_remp <= 75){
     device_current_status = device_status_tab[1]; // semi-plein
     }
     
@@ -234,7 +234,7 @@ String payloadfunc(){
     payload["Status"] = device_current_status;
     payload["Latitude"] = lat;
     payload["Longitude"] = lon;
-    payload["Battery"] = "N/A";
+    payload["Battery"] = "N/A"; // FIND THE WAY TO GET BATTERY LEVEL
     payload["TIMESTAMP"] = setTimeStamp();
 
     serializeJson(payload, msg);
