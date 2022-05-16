@@ -19,6 +19,7 @@
 #include <FS.h>
 #include <LittleFS.h>
 #include <CertStoreBearSSL.h>
+#include <ArduinoJson.h>
 
 // Additional  headers 
 #include "config.h"
@@ -194,7 +195,8 @@ float tr(){
   } 
   
 String playload(){
-  String msg = "";
+  StaticJsonDocument<200> payload;
+  String msg;
   float taux_remp;
   taux_remp = tr();
   if(taux_remp <= 15){
@@ -216,7 +218,17 @@ String playload(){
     else{
     device_current_status = device_status_tab[4]; // erreur
     }
+    // FORMATAGE DU MSG AVANT ENVOIE <======================= JE SUIS ICI
 
+    // Add values in the payload
+    payload["TauxDeRemp"] = taux_remp;
+    payload["Status"] = device_current_status;
+    payload["Latitude"] = lat;
+    payload["Longitude"] = lon;
+    payload["Battery"] = "N/A";
+    payload["TIMESTAMP"] = "193923823747821";
+
+    serializeJson(payload, msg);
 
   return msg;
   }
