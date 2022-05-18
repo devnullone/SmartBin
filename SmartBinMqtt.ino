@@ -39,8 +39,8 @@ const char* device_uid = DEVICE_UID;
 const char *device_status_tab[5] = DEVICE_STATUS_TAB;
 const char* device_current_status = DEVICE_CURRENT_STATUS;
 const float hauteurPou = DEVICE_HAUTEUR; // en Cm 
-const char* lat = LATITUDE_VALUE;
-const char* lon = LONGITUDE_VALUE;
+const float lat = LATITUDE_VALUE;
+const float lon = LONGITUDE_VALUE;
 
 
 // A single, global CertStore which can be used by all connections.
@@ -53,6 +53,8 @@ PubSubClient * client;
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE (500)
 char msg[MSG_BUFFER_SIZE];
+#define TPC_BUFFER_SIZE (50)
+char topic[TPC_BUFFER_SIZE];
 int value = 0;
 
 // HC-SE04 <------> EPS8266
@@ -235,6 +237,8 @@ String payloadfunc(){
     payload["Latitude"] = lat;
     payload["Longitude"] = lon;
     payload["Battery"] = "N/A"; // FIND THE WAY TO GET BATTERY LEVEL
+    payload["DeviceUID"] = device_uid;
+    payload["ClientID"] = client_id;
     payload["TIMESTAMP"] = setTimeStamp();
 
     serializeJson(payload, msg);
@@ -290,9 +294,10 @@ void loop() {
     ++value;
     String pload = payloadfunc();
     snprintf (msg, MSG_BUFFER_SIZE, "%s", pload.c_str());
+    snprintf (topic, TPC_BUFFER_SIZE, "poubelles/%s/", device_uid);
     Serial.print("Publish message: ");
     Serial.println(msg);
-    client->publish("testTopic", msg);
+    client->publish(topic, msg);
   }
   deconnection(); // Deconnexion
   deepSleep(); // Passage en mode veille prolonger pour sauveguarder la batterie
