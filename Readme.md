@@ -3,7 +3,7 @@
 <a href="https://dotnet.microsoft.com/en-us/apps/SmartBin">
     <img alt="SmartBin" title="SmartBin Strater Project" src="/pics/logo.png" width="300"><br/> + <br/>
   <a href="https://dotnet.microsoft.com/en-us/apps/SmartBin">
-    <img alt="SmartBin" title="SmartBin Strater Project" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/1024px-Arduino_Logo.svg.png" width="90"><br/>+ <br/><img alt="Android" title="SmartBin Strater Project" src="https://www.hivemq.com/img/svg/hivemq-logo.svg" width="130">
+    <img alt="SmartBin" title="SmartBin Strater Project" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/1024px-Arduino_Logo.svg.png" width="90"><br/>+ <br/><img alt="Android" title="SmartBin Strater Project" src="https://www.hivemq.com/img/svg/hivemq-logo.svg" width="200">
   </a>
 </p>
 
@@ -87,11 +87,11 @@ Install all library the project need:
 
 Then connect your ultrasonnic sensor I use the hc-sr04 who is good for testing purpose and realy cheap.
 
-Sensor <------> ESP8266
-Vcc<------> vv
-Trig<------> D8
-Echo<------>D7
-Gnd<------>GND after A0
+- Sensor <------> ESP8266
+- Vcc<------> vv
+- Trig<------> D8
+- Echo<------>D7
+- Gnd<------>GND
 <p align="center">
   <img src = "/pics/ESP8266-Ultrasonic-Sensor-Wiring-Fritzing-Diagram.webp" width=300>
 </p>
