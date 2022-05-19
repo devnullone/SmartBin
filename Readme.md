@@ -78,7 +78,7 @@ Feel free to send us feedback on [Twitter](https://twitter.com/GnOtaku) or [file
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md). -->
 
 ## Build Process
-Add ESP8266/ESP32 board to your arduino IDE. Follow this tutorial ->
+Add ESP8266/ESP32 board to your arduino IDE. Follow this [tutorial](https://randomnerdtutorials.com/).
 Install all library the project need:
 - NTPClient 
 - PubSubClient
