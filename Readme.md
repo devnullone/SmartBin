@@ -40,7 +40,7 @@ A few of the things you can do with this Repository:
 * Calculate the bins capacity and waste ✅
 * Send these data Trougth MQTT Protocol (HiveMQ Cloud) ✅
 * Show data on Map✅
-* Send Removing Alert when full ❌
+* Send live notifications of filled bins and their locations✅
 * more...
 
 The device connecting to internet over wifi get NTP clock(need to check certificate) and send Json data to predifined topic (**poubelles/$DeviceID/**) on HiveMQ Cloud. The device send data evry 5 min and go to deep sleep when evrything done well.
