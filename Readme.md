@@ -78,8 +78,38 @@ Feel free to send us feedback on [Twitter](https://twitter.com/GnOtaku) or [file
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md). -->
 
 ## Build Process
+Add ESP8266/ESP32 board to your arduino IDE. Follow this tutorial ->
+Install all library the project need:
+- NTPClient 
+- PubSubClient
+- LittleFS
+- ArduinoJson
 
+Then connect your ultrasonnic sensor I use the hc-sr04 who is good for testing purpose and realy cheap.
 
+Sensor <------> ESP8266
+Vcc<------> vv
+Trig<------> D8
+Echo<------>D7
+Gnd<------>GND after A0
+<p align="center">
+  <img src = "/pics/ESP8266-Ultrasonic-Sensor-Wiring-Fritzing-Diagram.webp" width=300>
+</p>
+
+Connect the D0 to RST pin to use deep sleep mode.
+<p align="center">
+  <img src = "/pics/enable_deep_sleep_esp8266.webp" width=300>
+</p>
+
+Connect your ESP8266 to the arduino IDE via USB cable and verify the code and upload it on the board.
+
+Don't forget to change values on config.h file according yours!
+
+Enjoy It!
+
+<p align="center"> If you like what I do, maybe consider buying me a coffee </p>
+
+<p align="center"><a href="https://www.buymeacoffee.com/devnull" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="120" ></a>
 <!-- ## Acknowledgments
 
 Thanks to [JetBrains](https://www.jetbrains.com) for supporting us with a [free Open Source License](https://www.jetbrains.com/buy/opensource). -->
