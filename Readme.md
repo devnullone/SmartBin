@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  An arduino smartbin project based on HiveMQ Cloud and an CI4 backend.
+  An arduino smartbin project based on HiveMQ Cloud and an CodeIgniter4 backend.
 </p>
 
 
