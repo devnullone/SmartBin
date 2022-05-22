@@ -172,7 +172,7 @@ void reconnect() {
 
 
 void deepSleep(){
-  // Deep sleep mode for X min, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
+  // Deep sleep mode for 5 min, the ESP8266 wakes up by itself when GPIO 16 (D0 in NodeMCU board) is connected to the RESET pin
   Serial.println("Passe en mode sommeil profond pendant 5 min");
   ESP.deepSleep(30e7); 
   
