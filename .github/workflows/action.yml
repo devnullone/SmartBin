@@ -76,7 +76,7 @@ jobs:
         uses: arduino/arduino-lint-action@v1
         with:
           sketch-paths: |
-            - ./
+            - ./SmartBin
           library-manager: update
 
       - name: Compile all examples using the arduino-test-compile action
