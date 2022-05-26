@@ -1,4 +1,4 @@
-# arduino-test-compile-ActionTest.yml
+# action.yml
 # Github workflow script for testing the arduino-test-compile action development.
 #
 # Copyright (C) 2020  Armin Joachimsmeyer
@@ -15,7 +15,6 @@ on:
     - '**.cpp'
     - '**.hpp'
     - '**.h'
-    - '**LibraryBuild.yml'
   pull_request:
     paths:
     - '**.ino'
